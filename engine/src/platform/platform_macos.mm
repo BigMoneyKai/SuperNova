@@ -1,5 +1,5 @@
 #import "platform.h"
-#if SNPLATFORM_MACOS
+#if SNPLATFORM_MAC
 
 #import "core/logger.h"
 
@@ -94,15 +94,16 @@ b8 platform_pump_messages(platform_state *plat_state) {
   return SN_TRUE;
 }
 
-void *platform_allocate(u64 size, b8 aligned) {
-  if (aligned) {
-    void *ptr = NULL;
-    if (posix_memalign(&ptr, ALIGNMENT, size) != 0) {
-      return NULL;
+void* platform_allocate(u64 size) {
+    return malloc(size);
+}
+
+void* platform_allocate_aligned(u64 size, u64 alignment) {
+    void* ptr = NULL;
+    if(posix_memalign(&ptr, alignment, size) != 0) {
+        return NULL;
     }
     return ptr;
-  }
-  return malloc(size);
 }
 
 void platform_free(void *block, b8 aligned) { free(block); }

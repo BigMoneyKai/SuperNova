@@ -88,12 +88,20 @@ b8 platform_pump_messages(platform_state* plat_state) {
     return SN_TRUE;
 }
 
-void* platform_allocate(u64 size, b8 aligned) {
+void* platform_allocate(u64 size) {
     return malloc(size);
 }
 
+void* platform_allocate_aligned(u64 size, u64 alignment) {
+    return _aligned_malloc((size_t)size, (size_t)alignment);
+}
+
 void platform_free(void* block, b8 aligned) {
-    free(block);
+    if(aligned) {
+        _aligned_free(block);
+    } else {
+        free(block);
+    }
 }
 
 void* platform_zero_memory(void* block, u64 size) {

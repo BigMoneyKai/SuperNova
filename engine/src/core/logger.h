@@ -12,7 +12,14 @@
 #define LOG_TRACE_ENABLED 0
 #endif
 
-typedef enum {
+#define RESET       "\033[0m"
+#define GREEN       "\033[32m"
+#define RED         "\033[31m"
+#define DARK_RED    "\033[1;31m"
+#define LIGHT_BLUE  "\033[94m"
+#define MAGENTA     "\033[35m"
+
+typedef enum log_level{
     LOG_LEVEL_FATAL = 0,
     LOG_LEVEL_ERROR = 1,
     LOG_LEVEL_WARN  = 2,

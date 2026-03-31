@@ -22,6 +22,9 @@ typedef double f64;
 typedef int b32;
 typedef char b8;
 
+// address types
+typedef uintptr_t addr;
+
 // properly define static assertion
 #if defined(__clang__) || defined(__GNUC__)
 #define STATIC_ASSERT _Static_assert
@@ -45,6 +48,8 @@ STATIC_ASSERT(sizeof(f64) == 8, "Expected f64 to be 8 byte.");
 
 STATIC_ASSERT(sizeof(b32) == 4, "Expected b32 to be 4 byte.");
 STATIC_ASSERT(sizeof(b8) == 1, "Expected b8 to be 1 byte.");
+
+STATIC_ASSERT(sizeof(addr) == 8, "Expected addr to be 8 byte.");
 
 // define boolean values
 #define SN_TRUE 1

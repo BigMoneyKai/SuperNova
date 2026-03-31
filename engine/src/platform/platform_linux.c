@@ -1,3 +1,5 @@
+#define _POSIX_C_SOURCE 200809L
+
 #include "platform.h"
 #if SNPLATFORM_LINUX
 
@@ -28,11 +30,17 @@ b8 platform_startup(
     i32 height
 ) {
     plat_state->internal_state = malloc(sizeof(internal_state));
+    if(!plat_state->internal_state) {
+        ERROR("Failed to allocate Linux platform state.");
+        return SN_FALSE;
+    }
     internal_state* state = (internal_state*)plat_state->internal_state;
 
     state->connection = xcb_connect(NULL, NULL);
     if (xcb_connection_has_error(state->connection)) {
         ERROR("Failed to connect to X server.\n");
+        free(state);
+        plat_state->internal_state = NULL;
         return SN_FALSE;
     }
 
@@ -117,10 +125,15 @@ b8 platform_startup(
 
 void platform_shutdown(platform_state* plat_state) {
     internal_state* state = (internal_state*)plat_state->internal_state;
+    if (!state) {
+        return;
+    }
     if (state->connection) {
         xcb_destroy_window(state->connection, state->window);
         xcb_disconnect(state->connection);
     }
+    free(state);
+    plat_state->internal_state = NULL;
 }
 
 b8 platform_pump_messages(platform_state* plat_state) {
@@ -163,19 +176,20 @@ b8 platform_pump_messages(platform_state* plat_state) {
     return SN_TRUE;
 }
 
-void* platform_allocate(u64 size, b8 aligned) {
-    if(aligned) {
-        void* ptr = NULL;
-        if(posix_memalign(&ptr, ALIGNMENT, size) != 0) {
-            return NULL;
-        }
-        return ptr;
-    }
-
+void* platform_allocate(u64 size) {
     return malloc(size);
 }
 
+void* platform_allocate_aligned(u64 size, u64 alignment) {
+    void* ptr = NULL;
+    if(posix_memalign(&ptr, alignment, size) != 0) {
+        return NULL;
+    }
+    return ptr;
+}
+
 void platform_free(void* block, b8 aligned) {
+    (void)aligned;
     free(block);
 }
 
@@ -207,17 +221,10 @@ f64 platform_get_absolute_time() {
 }
 
 void platform_sleep(u64 ms) {
-#if _POSIX_C_SOURCE >= 199309L
     struct timespec ts;
     ts.tv_sec = ms / 1000;
     ts.tv_nsec = (ms % 1000) * 1000000ULL;
     nanosleep(&ts, 0);
-#else
-    if(ms >= 1000) {
-        sleep(ms / 1000);
-    }
-    usleep((ms % 1000) * 1000);
-#endif
 }
 
 #endif
