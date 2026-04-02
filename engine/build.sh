@@ -16,7 +16,9 @@ includeFlags="-Isrc -I$VULKAN_SDK/include"
 linkerFlags="-lvulkan -lxcb -lX11-xcb -lxkbcommon -L$VULKAN_SDK/lib -L/usr/X11R6/lib"
 defines="-D_DEBUG -DSNEXPORT"
 
+buildCommand="clang $cFilenames $compilerFlags -o ../bin/lib$assembly.so $defines $includeFlags $linkerFlags"
+
 echo -e "$green Building $assembly...$reset"
-echo -e " Build command: clang $cFilenames $compilerFlags -o ../bin/lib$assembly.so $defines $includeFlags $linkerFlags"
-clang $cFilenames $compilerFlags -o ../bin/lib$assembly.so $defines $includeFlags $linkerFlags
+echo -e " Build command: $buildCommand"
+$buildCommand
 echo -e "$green $assembly built successfully.$reset"

@@ -9,13 +9,15 @@ mkdir -p ../bin
 cFilenames=$(find . -type f -name "*.c")
 
 assembly="testbed"
-compilerFlags="-g -fdeclspec -fPIC"
+compilerFlags="-g -fdeclspec -fPIC -fsanitize=address,leak"
 
 includeFlags="-Isrc -I../engine/src"
 linkerFlags="-L../bin/ -lengine -Wl,-rpath,\$ORIGIN"
 defines="-D_DEBUG -DSNIMPORT"
 
+buildCommand="clang $cFilenames $compilerFlags -o ../bin/$assembly $defines $includeFlags $linkerFlags"
+
 echo -e "$green Building $assembly...$reset"
-echo "Build command: clang $cFilenames $compilerFlags -o ../bin/$assembly $defines $includeFlags $linkerFlags"
-clang $cFilenames $compilerFlags -o ../bin/$assembly $defines $includeFlags $linkerFlags
+echo "Build command: $buildCommand"
+$buildCommand
 echo -e "$green $assembly built successfully.$reset"

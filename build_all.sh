@@ -30,3 +30,4 @@ fi
 
 echo
 echo "All assemblies built successfully."
+echo

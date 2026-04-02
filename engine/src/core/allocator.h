@@ -77,15 +77,14 @@ void stack_reset_to_mark(stack_allocator* stack, u64 mark);
 void stack_reset(stack_allocator* stack);
 void stack_destroy(stack_allocator* stack);
 
-// ===== Heap Allocator =====
-typedef struct heap_allocator {
-    u8* start;
+// ===== General Allocator =====
+typedef struct general_allocator {
     u64 total_size;
+    u64 used;
     u64 alignment;
-    b8 is_allocated;
-} heap_allocator;
+} general_allocator;
 
-b8 heap_init(heap_allocator* heap, u64 total_size, u64 alignment);
-void* heap_alloc(heap_allocator* heap);
-void heap_free(heap_allocator* heap);
-void heap_destroy(heap_allocator* heap);
+b8 general_init(general_allocator* alloc, u64 total_size, u64 alignment);
+void* general_alloc(general_allocator* alloc, u64 size);
+void general_free(general_allocator* alloc, void* block, u64 size);
+void general_destroy(general_allocator* alloc);

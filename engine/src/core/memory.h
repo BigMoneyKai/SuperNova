@@ -5,7 +5,7 @@
 typedef struct stack_allocator stack_allocator;
 typedef struct pool_allocator pool_allocator;
 typedef struct linear_allocator linear_allocator;
-typedef struct heap_allocator heap_allocator;
+typedef struct general_allocator general_allocator;
 
 #define B(x) ((u64)(x))
 #define KB(x) (B(x) * 1024ULL)
@@ -64,29 +64,45 @@ typedef struct memsys_state {
 
 extern memsys_state* mss;
 
-extern stack_allocator job_stack;
-extern stack_allocator string_stack;
+// Allocators
+
+// =============== Pool =================
 extern pool_allocator array_pool32;
 extern pool_allocator darray_pool32;
 extern pool_allocator ring_buffer_pool32;
-extern linear_allocator bst_linear;
+// ============== Linear ================
 extern linear_allocator engine_linear;
-extern heap_allocator texture_heap;
-extern heap_allocator material_instance_heap;
-extern heap_allocator renderer_heap;
-extern linear_allocator game_linear;
-extern linear_allocator transform_linear;
-extern linear_allocator entity_linear;
-extern linear_allocator entity_node_linear;
-extern linear_allocator scene_linear;
+// =============== Stack ================
+extern stack_allocator job_stack;
+extern stack_allocator string_stack;
+// ============== General ===============
+extern general_allocator array_general;
+extern general_allocator darray_general;
+extern general_allocator ring_buffer_general;
+extern general_allocator bst_general;
+extern general_allocator texture_general;
+extern general_allocator material_instance_general;
+extern general_allocator renderer_general;
+extern general_allocator game_general;
+extern general_allocator transform_general;
+extern general_allocator entity_general;
+extern general_allocator entity_node_general;
+extern general_allocator scene_general;
 
 SNAPI b8 snminit(u64 size, void* state);
 SNAPI b8 snmquit(void* state);
 SNAPI void* snmalloc(u64 size, memtag tag);
 SNAPI void snmfree(void* block, u64 size, memtag tag);
 SNAPI void snmcopy(void* dest, const void* src, u64 size);
+SNAPI void snmmove(void* dest, const void* src, u64 size);
 SNAPI void snmset(void* block, i32 value, u64 size);
 SNAPI void snmzero(void* block, u64 size);
+SNAPI u64 snm_string_mark(void);
+SNAPI void snm_string_reset_to_mark(u64 mark);
+SNAPI void snm_string_reset(void);
+SNAPI u64 snm_job_mark(void);
+SNAPI void snm_job_reset_to_mark(u64 mark);
+SNAPI void snm_job_reset(void);
 
 SNAPI void get_meminfo(memtag tag, char* buffer, u64 bufsize);
 SNAPI void print_mstats(void);

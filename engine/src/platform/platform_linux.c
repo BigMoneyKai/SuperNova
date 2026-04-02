@@ -1,7 +1,7 @@
 #define _POSIX_C_SOURCE 200809L
 
 #include "platform.h"
-#if SNPLATFORM_LINUX
+#if SN_PLATFORM_LINUX
 
 #include "core/logger.h"
 
@@ -193,16 +193,20 @@ void platform_free(void* block, b8 aligned) {
     free(block);
 }
 
-void* platform_zero_memory(void* block, u64 size) {
-    return memset(block, 0, size);
+void platform_zero_memory(void* block, u64 size) {
+    memset(block, 0, size);
 }
 
-void* platform_copy_memory(void* dest, const void* src, u64 size) {
-    return memcpy(dest, src, size);
+void platform_copy_memory(void* dest, const void* src, u64 size) {
+    memcpy(dest, src, size);
 }
 
-void* platform_set_memory(void* dest, i32 value, u64 size) {
-    return memset(dest, value, size);
+void platform_move_memory(void* dest, const void* src, u64 size) {
+    memmove(dest, src, size);
+}
+
+void platform_set_memory(void* dest, i32 value, u64 size) {
+    memset(dest, value, size);
 }
 
 void platform_console_write(const char* msg, u8 color) {
