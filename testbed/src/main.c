@@ -62,6 +62,7 @@ static b8 test_containers(void) {
     array_create(&fixed, i32);
     darray_create(&dynamic, i32);
     adarray_create(&manual, i32);
+    print_mstats();
 
     for(i32 i = 0; i < 16; ++i) {
         array_push(&fixed, i);
@@ -72,6 +73,7 @@ static b8 test_containers(void) {
     darray_push(&dynamic, 16);
     adarray_resize(&manual);
     adarray_push(&manual, 16);
+    print_mstats();
 
     array_pop(&fixed, &out);
     if(out != 15) return SN_FALSE;
